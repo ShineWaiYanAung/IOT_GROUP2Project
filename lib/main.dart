@@ -33,6 +33,9 @@ class MyApp extends StatelessWidget {
             fontWeight: FontWeight.w400,
             fontSize: 15,
           ),
+          titleSmall: TextStyle(
+            color: cardColor
+          ),
         ),
         useMaterial3: true,
       ),

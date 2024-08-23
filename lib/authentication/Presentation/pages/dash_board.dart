@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import '../Widget/Componets/build_rooms.dart';
 import '../Widget/Componets/course_status.dart';
 import '../Widget/Componets/main_title.dart';
 import '../Widget/Componets/up_bar_widget.dart';
@@ -10,48 +11,87 @@ class DashBoard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        body: SafeArea(
-          child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            children: [
-              ///UpperWidgets
-              UpBarWidget(),
-              const SizedBox(
-                height: 10,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: SafeArea(
+        child: ListView(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          children: [
+            ///UpperWidgets
+            UpBarWidget(),
+            const SizedBox(
+              height: 10,
+            ),
+
+            ///MainTitle
+            MainTitle(
+              title: "Group2",
+              textStyle: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+
+            MainTitle(
+                title: "HomeAutomation",
+                textStyle: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(
+              height: 10,
+            ),
+            buildProgressBox(context),
+            const SizedBox(
+              height: 25,
+            ),
+
+            const MainTitle(
+              title: "Rooms",
+              textStyle: TextStyle(
+                letterSpacing: 2,
+                fontSize: 25,
+                fontFamily: 'SecondaryFont',
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
               ),
-
-              ///MainTitle
-              MainTitle(
-                title: "Group2",
-                textStyle: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(
+              height: 25,
+            ),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                buildRooms(
+                  title: 'Living Room',
+                  path: 'assets/Rooms/livingRoom.png',
+                ),
+                buildRooms(
+                  title: 'Kitchen Room',
+                  path: 'assets/Rooms/kitchen.png',
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 40,
+            ),
+            const Center(
+              child: buildRooms(
+                title: 'Garage',
+                path: 'assets/Rooms/garage.png',
               ),
-              SizedBox(height: 15,),
-
-              MainTitle(
-                  title: "HomeAutomation",
-                  textStyle: Theme.of(context).textTheme.titleMedium),
-
-              ///SecondaryTitle
-              const SizedBox(
-                height: 10,
-              ),
-          buildProgressBox(context),
-              ///Courses
-              // buildCourses(context),
-              // Container(
-              // color: Theme.of(context).scaffoldBackgroundColor,
-              // height: 10,
-              // ),
-
-              ///Upcoming Event
-
-              ///BuildComingEvent
-              // buildUpComingEvent(),
-            ],
-          ),
-        ));
+            )
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).cardColor,
+        onPressed: () {},
+        child: Icon(
+          Icons.notifications,
+          color: Theme.of(context).scaffoldBackgroundColor,
+          size: 40,
+        ),
+      ),
+    );
   }
+
   Widget buildProgressBox(context) {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
@@ -63,83 +103,95 @@ class DashBoard extends StatelessWidget {
       padding: EdgeInsets.only(top: index),
       child: Container(
           width: width,
-          padding: EdgeInsets.symmetric(horizontal: index2, vertical: index1),
+          padding: EdgeInsets.symmetric(horizontal: index2, vertical: 20),
           decoration: BoxDecoration(
-              color: Theme.of(context).focusColor,
+              color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(30)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
             children: [
-              ///MainColumn
-              const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ///Enrolled Courses
-                  CourseStatus(
-                    title: "Enrolled Courses",
-                    count: 4,
-                    iconData: Icons.book,
+                  ///MainColumn
+                  ///
+                  Column(
+                    children: [
+                      const Text(
+                        "Temp",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 2,
+                          fontSize: 19,
+                          fontFamily: "SecondaryFont",
+                          color: Color(0xFF002757),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+
+                      ///This Need to Be done
+                      CircularPercentIndicator(
+                        animation: true,
+                        animationDuration: 5000,
+                        progressColor: const Color(0xFF6489EB),
+                        circularStrokeCap: CircularStrokeCap.round,
+                        backgroundColor:
+                            Theme.of(context).primaryColor.withOpacity(0.3),
+                        percent: 1,
+                        lineWidth: 10,
+                        radius: 60,
+                        center: const Text(
+                          "40'C",
+                          style: TextStyle(
+                              fontFamily: "SecondaryFont",
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      )
+                    ],
                   ),
-                  SizedBox(
-                    height: 15,
+                  const SizedBox(
+                    height: 120, // Define the height according to your design
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        /// Fire Alarm
+                        HouseStatus(
+                          title: "Fire Safe",
+                          isFireDetected: true,
+                        ),
+                        HouseStatus(
+                          title: "Suit Oxygen",
+                          isFireDetected: false,
+                        ),
+                        HouseStatus(
+                          title: "Suit Oxygen",
+                          isFireDetected: false,
+                        ),
+                      ],
+                    ),
                   ),
 
-                  ///Completed Courses
-                  CourseStatus(
-                    title: "Completed Courses",
-                    count: 4,
-                    iconData: Icons.task,
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-
-                  ///Progress Courses
-                  CourseStatus(
-                    title: "Progress Courses",
-                    count: 0,
-                    iconData: Icons.settings,
-                  ),
+                  ///MainColumn
                 ],
               ),
-
-              ///MainColumn
-              Column(
-                children: [
-                  const Text(
-                    "OverView Progress",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 2,
-                      fontSize: 12,
-                      fontFamily: "SecondaryFont",
-                      color: Colors.white,
-                    ),
+              Divider(
+                thickness: 1,
+                color: Color(0xFF002757),
+              ),
+              const Center(
+                child: const Text(
+                  "Comfort",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2,
+                    fontSize: 22,
+                    fontFamily: "SecondaryFont",
+                    color: Color(0xFF002757),
                   ),
-                  SizedBox(
-                    height: index3,
-                  ),
-
-                  ///This Need to Be done
-                  CircularPercentIndicator(
-                    animation: true,
-                    animationDuration: 5000,
-                    progressColor: Theme.of(context).primaryColor,
-                    circularStrokeCap: CircularStrokeCap.round,
-                    backgroundColor:
-                    Theme.of(context).primaryColor.withOpacity(0.3),
-                    percent: 0.4,
-                    lineWidth: 10,
-                    radius: 60,
-                    center: const Text(
-                      "40%",
-                      style: TextStyle(
-                          fontFamily: "SecondaryFont",
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  )
-                ],
+                ),
               ),
             ],
           )),
