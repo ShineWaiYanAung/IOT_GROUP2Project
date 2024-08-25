@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 class HouseStatus extends StatelessWidget {
   final String title;
   final bool isFireDetected;
+  final Color color;
   const HouseStatus({
     super.key,
     required this.title,
-    required this.isFireDetected,
+    required this.isFireDetected, required this.color,
   });
 
   @override
@@ -27,11 +28,11 @@ class HouseStatus extends StatelessWidget {
         ),
         Text(
           title,
-          style: const TextStyle(
+          style:  TextStyle(
             fontWeight: FontWeight.bold,
             letterSpacing: 2,
             fontFamily: "SecondaryFont",
-            color: Color(0xFF002757),
+            color: color,
           ),
         )
       ],

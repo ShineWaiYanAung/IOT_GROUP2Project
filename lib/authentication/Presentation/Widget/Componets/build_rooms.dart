@@ -3,21 +3,23 @@ import 'package:flutter/material.dart';
 class buildRooms extends StatelessWidget {
   final String title;
   final String path;
-  // final Widget widgetRoom;
+  final Widget widgetRoom;
   const buildRooms({
     super.key,
     required this.title,
     required this.path,
-    // required this.widgetRoom,
+    required this.widgetRoom,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigator.of(context).push(MaterialPageRoute(
-        //   builder: (context) => widgetRoom,
-        // ),);
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => widgetRoom,
+          ),
+        );
       },
       child: Container(
         padding: EdgeInsets.all(20),
@@ -59,8 +61,8 @@ class buildRooms extends StatelessWidget {
             SizedBox(
               height: 10,
             ),
-            const Text(
-              "Living Room",
+            Text(
+              title,
               style: TextStyle(
                 color: Color(0xFF002757),
               ),

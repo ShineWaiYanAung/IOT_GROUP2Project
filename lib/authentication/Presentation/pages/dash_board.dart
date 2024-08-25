@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:iot_group2_app/authentication/Presentation/subpage/Rooms/garage.dart';
+import 'package:iot_group2_app/authentication/Presentation/subpage/Rooms/kitchenRoom.dart';
+import 'package:iot_group2_app/authentication/Presentation/subpage/Rooms/livingRoom.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import '../Widget/Componets/build_rooms.dart';
 import '../Widget/Componets/course_status.dart';
@@ -61,10 +64,13 @@ class DashBoard extends StatelessWidget {
                 buildRooms(
                   title: 'Living Room',
                   path: 'assets/Rooms/livingRoom.png',
+                  widgetRoom: LivingRoom(title: 'Living Room',path: 'assets/Rooms/livingRoom.png',),
+
                 ),
                 buildRooms(
                   title: 'Kitchen Room',
                   path: 'assets/Rooms/kitchen.png',
+                  widgetRoom: KitchenRoom(title: 'Kitchen Room', path: 'assets/Rooms/kitchen.png',),
                 ),
               ],
             ),
@@ -75,6 +81,7 @@ class DashBoard extends StatelessWidget {
               child: buildRooms(
                 title: 'Garage',
                 path: 'assets/Rooms/garage.png',
+                widgetRoom: GarageRoom(title: '', path: '',),
               ),
             )
           ],
@@ -161,14 +168,17 @@ class DashBoard extends StatelessWidget {
                         HouseStatus(
                           title: "Fire Safe",
                           isFireDetected: true,
+                          color: Color(0xFF002757),
                         ),
                         HouseStatus(
                           title: "Suit Oxygen",
                           isFireDetected: false,
+                          color: Color(0xFF002757),
                         ),
                         HouseStatus(
                           title: "Suit Oxygen",
                           isFireDetected: false,
+                          color: Color(0xFF002757),
                         ),
                       ],
                     ),

@@ -47,6 +47,8 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
   percent_indicator: ^4.2.3
+  lottie: ^3.1.2
+  flutter_switch: ^0.3.2
 
 
 
@@ -67,6 +69,20 @@ flutter:
     - assets/Rooms/garage.png
     - assets/Rooms/kitchen.png
     - assets/Rooms/livingRoom.png
+    - lottieAnimation/alarm.json
+    - lottieAnimation/fan.json
+    - lottieAnimation/garage.json
+    - lottieAnimation/motor.json
+
+    - lottieAnimation/waterLevel.json
+    - lottieAnimation/condition/hot.json
+    - lottieAnimation/condition/snow.json
+    - assets/backIcon.png
+    - assets/FunctionIcon/RightLamp/rightLamp.png
+    - assets/FunctionIcon/RightLamp/rightLightLamp.png
+    - assets/FunctionIcon/LeftLamp/leftLightLamp.png
+    - assets/FunctionIcon/LeftLamp/leftLamp.png
+    - assets/FireComponents/snow.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
