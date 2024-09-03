@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "538399111443",
+    "project_id": "homeautomation-df130",
+    "storage_bucket": "homeautomation-df130.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:538399111443:android:14356000c12562cdd182e6",
+        "android_client_info": {
+          "package_name": "com.example.iot_group2_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIRTzaY9yj77gdIjM1GVifWOCQM5MyCOE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

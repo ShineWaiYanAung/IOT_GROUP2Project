@@ -1,0 +1,17 @@
+{
+  "HomeAutomation": {
+    "livingRoom": {
+      "mainLightBulb": true,
+      "firedoorlockSensor": true,
+      "Fan": true
+    },
+    "garage": {
+      "doorOpen": true
+    },
+    "kitchen": {
+      "ventilationFan": true,
+      "fireAlarm": true,
+      "smoke": true
+    }
+  }
+}

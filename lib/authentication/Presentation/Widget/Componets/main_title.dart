@@ -15,7 +15,7 @@ class MainTitle extends StatelessWidget {
     final double index = height * 0.02;
     return Container(
       alignment: Alignment.center,
-      color: Theme.of(context).scaffoldBackgroundColor,
+      color: Colors.transparent,
       child: Text(title, style: textStyle),
     );
   }
