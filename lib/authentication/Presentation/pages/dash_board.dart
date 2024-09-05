@@ -124,7 +124,7 @@ class _DashBoardState extends State<DashBoard> {
               child: buildRooms(
                 title: 'Garage',
                 path: 'assets/Rooms/garage.png',
-                widgetRoom: GarageRoom(title: '', path: ''),
+                widgetRoom: GarageRoom(title: 'Garage', path: 'assets/Rooms/garage.png'),
               ),
             ),
           ],
@@ -245,7 +245,7 @@ class _DashBoardState extends State<DashBoard> {
             )
                 : const Center(
               child: Text(
-                "Comfort",
+                "Home is Safe",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   letterSpacing: 2,

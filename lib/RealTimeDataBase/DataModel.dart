@@ -98,6 +98,16 @@ class Garage {
   }
 }
 
+extension GarageCopyWith on Garage {
+Garage copyWith({
+  bool? doorOpen
+  }) {
+    return Garage(
+        doorOpen: doorOpen ?? this.doorOpen
+
+    );
+  }
+}
 class Kitchen {
   bool ventilationFan;
   bool fireAlarm;
@@ -123,5 +133,19 @@ class Kitchen {
       'fireAlarm': fireAlarm,
       'smoke': smoke,
     };
+  }
+}
+
+extension KitchenCopyWith on Kitchen {
+  Kitchen copyWith({
+    bool? ventilationFan,
+    bool? fireAlarm,
+    bool? smoke,
+  }) {
+    return Kitchen(
+      ventilationFan: ventilationFan ?? this.ventilationFan,
+      fireAlarm: fireAlarm ?? this.fireAlarm,
+      smoke: smoke ?? this.smoke,
+    );
   }
 }

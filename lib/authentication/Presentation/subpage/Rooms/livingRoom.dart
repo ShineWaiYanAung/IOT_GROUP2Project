@@ -23,7 +23,7 @@ class LivingRoomUI extends StatefulWidget {
 class _LivingRoomUIState extends State<LivingRoomUI> with TickerProviderStateMixin{
   final DataBaseService _dbService = DataBaseService();
   StreamSubscription<DataSnapshot>? _dataSubscription;
-  late final AnimationController _fireAlarmController;
+  late final AnimationController _frontAlarmController;
   late final AnimationController _fanController;
 
   bool fanStatus = true;
@@ -34,20 +34,20 @@ class _LivingRoomUIState extends State<LivingRoomUI> with TickerProviderStateMix
   @override
   void initState() {
     super.initState();
-    _fireAlarmController = AnimationController(vsync: this);
+    _frontAlarmController = AnimationController(vsync: this);
     _fanController = AnimationController(vsync: this);
     _loadData();
   }
   ///FireAlarm
   void _updateFireAlarmAnimation() {
     if (_homeAutomation?.livingRoom.firedoorlockSensor ?? false) {
-      if (!_fireAlarmController.isAnimating) {
-        _fireAlarmController.repeat(); // Loop the animation
+      if (!_frontAlarmController.isAnimating) {
+        _frontAlarmController.repeat(); // Loop the animation
       }
     } else {
-      if (_fireAlarmController.isAnimating) {
-        _fireAlarmController.stop(); // Stop the animation
-        _fireAlarmController.reset(); // Optionally reset the animation
+      if (_frontAlarmController.isAnimating) {
+        _frontAlarmController.stop(); // Stop the animation
+        _frontAlarmController.reset(); // Optionally reset the animation
       }
     }
   }
@@ -95,11 +95,12 @@ class _LivingRoomUIState extends State<LivingRoomUI> with TickerProviderStateMix
     try {
       final data = await _dbService.readData('HomeAutomation');
       final homeAutomation = HomeAutomation.fromJson(data);
-      if (!mounted) return; // Check if widget is still in the tree
-      setState(() {
-        _homeAutomation = homeAutomation;
-      });
-    } catch (error) {
+      if (mounted) {
+        setState(() {
+          _homeAutomation = homeAutomation;
+        });
+      }
+    }  catch (error) {
       print('Error reading data: $error');
 
     }
@@ -107,12 +108,15 @@ class _LivingRoomUIState extends State<LivingRoomUI> with TickerProviderStateMix
     // Set up real-time updates
     _dbService.listenToData('HomeAutomation', (data) {
       final homeAutomation = HomeAutomation.fromJson(data);
-      setState(() {
-        _homeAutomation = homeAutomation;
-        _updateFanAnimation();
-        _updateFireAlarmAnimation();
-      });
+      if (mounted) {
+        setState(() {
+          _homeAutomation = homeAutomation;
+          _updateFanAnimation();
+          _updateFireAlarmAnimation();
+        });
+      }
     });
+
   }
 
   ///FanSwitch
@@ -155,11 +159,14 @@ class _LivingRoomUIState extends State<LivingRoomUI> with TickerProviderStateMix
   }
 
   @override
+  @override
   void dispose() {
-    _dataSubscription?.cancel();
-    _fireAlarmController.dispose();
+    _dataSubscription?.cancel(); // Ensure to cancel the subscription
+    _frontAlarmController.dispose();
+    _fanController.dispose();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -299,9 +306,9 @@ class _LivingRoomUIState extends State<LivingRoomUI> with TickerProviderStateMix
                       shape: BoxShape.circle,
                     ),
                     child: Lottie.asset("lottieAnimation/alarm.json",
-                        controller: _fireAlarmController,
+                        controller: _frontAlarmController,
                         onLoaded: (composition){
-                          _fireAlarmController.duration = composition.duration;
+                          _frontAlarmController.duration = composition.duration;
                           _updateFireAlarmAnimation();
                         },
                         height: 70),
