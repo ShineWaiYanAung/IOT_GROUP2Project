@@ -1,14 +1,20 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:iot_group2_app/RealTimeDataBase/loca_notification.dart';
 import 'package:iot_group2_app/config/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'api_message.dart';
 import 'authentication/Presentation/pages/Home_Page.dart';
 import 'authentication/Presentation/pages/dash_board.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await LocalNotifications.init();
   try {
     await Firebase.initializeApp();
+    await FireBaseAPI().initNotifications();
+
+
     if (kDebugMode) {
       print('Firebase initialized successfully');
     }

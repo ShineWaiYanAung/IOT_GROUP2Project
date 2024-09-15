@@ -123,22 +123,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> with TickerProviderStateMix
 
 
   //MainLight
-  void _toggleMainLight() async {
-    if (_homeAutomation == null) return;
 
-    final newMainLightStatus = !_homeAutomation!.livingRoom.mainLightBulb;
-
-    setState(() {
-      _homeAutomation!.livingRoom.mainLightBulb = newMainLightStatus;
-    });
-
-    try {
-      final updatedLivingRoom = _homeAutomation!.livingRoom.copyWith(mainLightBulb: newMainLightStatus);
-      await _dbService.updateData('HomeAutomation/livingRoom', updatedLivingRoom.toJson());
-    } catch (e) {
-      print('Failed to update main light status: $e');
-    }
-  }
 
   void _toggleLight() async {
     if (_homeAutomation == null) return;
@@ -338,33 +323,17 @@ class _LivingRoomUIState extends State<LivingRoomUI> with TickerProviderStateMix
 
             // Lamps
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 25),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      _toggleMainLight();
-                    },
-                    child: LampOnOff(
-                      tempStatus: _homeAutomation!.livingRoom.mainLightBulb,
-                      onLight: "assets/FunctionIcon/RightLamp/rightLightLamp.png",
-                      offLight: "assets/FunctionIcon/RightLamp/rightLamp.png",
-                      lampName: "MainLamp",
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      _toggleLight();
-                    },
-                    child: LampOnOff(
-                      tempStatus: _homeAutomation!.livingRoom.lights,
-                      onLight: "assets/FunctionIcon/LeftLamp/leftLightLamp.png",
-                      offLight: "assets/FunctionIcon/LeftLamp/leftLamp.png",
-                      lampName: "Lamps",
-                    ),
-                  ),
-                ],
+              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 120),
+              child: GestureDetector(
+                onTap: () {
+                  _toggleLight();
+                },
+                child: LampOnOff(
+                  tempStatus: _homeAutomation!.livingRoom.lights,
+                  onLight: "assets/FunctionIcon/LeftLamp/leftLightLamp.png",
+                  offLight: "assets/FunctionIcon/LeftLamp/leftLamp.png",
+                  lampName: "Lamps",
+                ),
               ),
             ),
           ] else

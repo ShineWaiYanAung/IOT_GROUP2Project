@@ -6,6 +6,7 @@ import 'package:iot_group2_app/authentication/Presentation/subpage/Rooms/livingR
 import 'package:percent_indicator/percent_indicator.dart';
 import '../../../RealTimeDataBase/DataModel.dart';
 import '../../../RealTimeDataBase/fire_base.dart';
+import '../../../RealTimeDataBase/loca_notification.dart';
 import '../Widget/Componets/build_rooms.dart';
 import '../Widget/Componets/course_status.dart';
 import '../Widget/Componets/main_title.dart';
@@ -24,11 +25,13 @@ class _DashBoardState extends State<DashBoard> {
   HomeAutomation? _homeAutomation;
   bool _isLoading = true;
   bool isRedBackground = false; // To control background color flashing
-  Timer? _timer;
+  Timer? _flashTimer; // Timer for flashing the background
+  Timer? _notificationTimer; // Timer for sending notifications
 
   @override
   void dispose() {
-    _timer?.cancel(); // Cancel timer when the widget is disposed
+    _flashTimer?.cancel(); // Cancel the flash timer when the widget is disposed
+    _notificationTimer?.cancel(); // Cancel the notification timer when the widget is disposed
     super.dispose();
   }
 
@@ -38,6 +41,7 @@ class _DashBoardState extends State<DashBoard> {
     _loadData();
   }
 
+
   Future<void> _loadData() async {
     try {
       final data = await _dbService.readData('HomeAutomation');
@@ -46,9 +50,16 @@ class _DashBoardState extends State<DashBoard> {
         _homeAutomation = homeAutomation;
         _isLoading = false; // Data has been loaded
         if (_homeAutomation?.kitchen.fireAlarm ?? false) {
+          LocalNotifications.showFireAlarmNoti(
+              title: "Fire Alert!",
+              body: "Your home is on fire! Please take immediate action.",
+              payload: "FireAlarm"
+          );
           _startFlashingBackground(); // Start flashing effect when fire alarm is triggered
+          _startFireNotification(); // Start notifications for fire
         } else {
           _stopFlashingBackground(); // Stop flashing effect when fire alarm is cleared
+          _stopFireNotification(); // Stop notifications
         }
         print("Fire Alarm: ${_homeAutomation?.kitchen.fireAlarm}");
       });
@@ -130,19 +141,7 @@ class _DashBoardState extends State<DashBoard> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).cardColor,
-        onPressed: () {
-          setState(() {
 
-          });
-        },
-        child: Icon(
-          Icons.notifications,
-          color: Theme.of(context).scaffoldBackgroundColor,
-          size: 40,
-        ),
-      ),
     );
   }
 
@@ -260,19 +259,37 @@ class _DashBoardState extends State<DashBoard> {
       ),
     );
   }
-
   void _startFlashingBackground() {
-    _timer = Timer.periodic(Duration(milliseconds: 500), (timer) {
+    _flashTimer = Timer.periodic(Duration(milliseconds: 500), (timer) {
       setState(() {
-        isRedBackground = !isRedBackground;
+        isRedBackground = !isRedBackground; // Toggle the background color
       });
     });
   }
 
   void _stopFlashingBackground() {
-    _timer?.cancel();
+    _flashTimer?.cancel();
     setState(() {
-      isRedBackground = false; // Ensure background is not red when fire alarm is off
+      isRedBackground = false; // Reset the background when fire alarm is off
     });
   }
+
+  void _startFireNotification() {
+    // Start a periodic timer to send notifications every 2 seconds
+    _notificationTimer = Timer.periodic(Duration(seconds: 2), (timer) {
+      // Notification sent every 2 seconds while there is fire
+      LocalNotifications.showFireAlarmNoti(
+          title: "Fire Alert!",
+          body: "Your home is on fire! Please take immediate action.",
+          payload: "FireAlarm"
+      );
+    });
+  }
+
+  void _stopFireNotification() {
+    // Stop the periodic timer to stop sending notifications
+    _notificationTimer?.cancel();
+  }
+
+
 }

@@ -50,7 +50,22 @@ class _KitchenRoomState extends State<KitchenRoom>
       }
     }
   }
+  void _toggleMainLight() async {
+    if (_homeAutomation == null) return;
 
+    final newMainLightStatus = !_homeAutomation!.livingRoom.mainLightBulb;
+
+    setState(() {
+      _homeAutomation!.livingRoom.mainLightBulb = newMainLightStatus;
+    });
+
+    try {
+      final updatedLivingRoom = _homeAutomation!.livingRoom.copyWith(mainLightBulb: newMainLightStatus);
+      await _dbService.updateData('HomeAutomation/livingRoom', updatedLivingRoom.toJson());
+    } catch (e) {
+      print('Failed to update main light status: $e');
+    }
+  }
   ///FanStatusStop
   void _updateFanAnimation() {
     print(
@@ -85,7 +100,7 @@ class _KitchenRoomState extends State<KitchenRoom>
 
     try {
       final updatedKitchenRoom =
-          _homeAutomation!.kitchen.copyWith(ventilationFan: fanStatus);
+      _homeAutomation!.kitchen.copyWith(ventilationFan: fanStatus);
       await _dbService.updateData(
           'HomeAutomation/kitchen', updatedKitchenRoom.toJson());
     } catch (e) {
@@ -133,251 +148,282 @@ class _KitchenRoomState extends State<KitchenRoom>
         children: [
           RoomProfile(title: widget.title, path: widget.path),
           if (_homeAutomation != null) ...[
-          ///FireAlarm
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-            decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            padding: EdgeInsets.only(top: 15, left: 30, right: 30, bottom: 40),
-            child: Column(
-              children: [
-                const Text(
-                  "Fire Detection",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      height: 100,
-                      width: 100,
-                      decoration: const BoxDecoration(
-                          color: Color(0xFF7CB1F1),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.white,
-                                blurRadius: 1,
-                                spreadRadius: 2),
-                          ],
-                          shape: BoxShape.circle),
-                      child: Lottie.asset("lottieAnimation/alarm.json",
-                        controller: _fireAlarmController,
-                        onLoaded: (composition){
-                          _fireAlarmController.duration = composition.duration;
-                          _updateFireAlarmAnimation();
-                        },
-                      ),
-                    ),
-                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        HouseStatus(
-                          title: "Gas Leakage",
-                          isFireDetected: _homeAutomation!.kitchen.smoke ,
-                          color: Color(0xFFFFFFFF),
-                        ),
-                        SizedBox(
-                          height: 30,
-                        ),
-                        HouseStatus(
-                          title: "Fire!Fire!",
-                          isFireDetected: _homeAutomation!.kitchen.fireAlarm,
-                          color: Color(0xFFFFFFFF),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ],
-            ),
-          ),
-
-          ///WaterLevelAndPump
-          // Container(
-          //   padding: const EdgeInsets.only(
-          //     top: 40,
-          //   ),
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.spaceAround,
-          //     children: [
-          //       ///WaterLevel
-          //       Container(
-          //         padding:
-          //             const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-          //         decoration: BoxDecoration(
-          //           borderRadius: BorderRadius.circular(20),
-          //           color: Color(0xFF7CB1F1),
-          //         ),
-          //         child: Column(
-          //           children: [
-          //             ///WaterLevel
-          //             const Text(
-          //               "Water Level",
-          //               style: TextStyle(
-          //                   color: Colors.white,
-          //                   fontWeight: FontWeight.bold,
-          //                   fontSize: 14),
-          //             ),
-          //             const SizedBox(
-          //               height: 10,
-          //             ),
-          //             Container(
-          //                 height: 70,
-          //                 width: 100,
-          //                 decoration: const BoxDecoration(
-          //                     color: Color(0xFF7CB1F1),
-          //                     boxShadow: [
-          //                       BoxShadow(
-          //                           color: Colors.white,
-          //                           blurRadius: 3,
-          //                           spreadRadius: 3),
-          //                     ],
-          //                     shape: BoxShape.circle),
-          //                 child: Lottie.asset("lottieAnimation/waterLevel.json",
-          //                     height: 50)),
-          //
-          //             SizedBox(
-          //               height: 10,
-          //             ),
-          //             const Text(
-          //               "Full",
-          //               style: TextStyle(
-          //                   color: Colors.white,
-          //                   fontWeight: FontWeight.bold,
-          //                   fontSize: 14),
-          //             ),
-          //           ],
-          //         ),
-          //       ),
-          //
-          //       ///Motor
-          //       Container(
-          //         padding:
-          //             const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-          //         decoration: BoxDecoration(
-          //           borderRadius: BorderRadius.circular(20),
-          //           color: Colors.black,
-          //         ),
-          //         child: Column(
-          //           children: [
-          //             ///Water Pump
-          //             const Text(
-          //               "Water Pump",
-          //               style: TextStyle(
-          //                   color: Colors.white,
-          //                   fontWeight: FontWeight.bold,
-          //                   fontSize: 14),
-          //             ),
-          //             const SizedBox(
-          //               height: 10,
-          //             ),
-          //             Container(
-          //               height: 70,
-          //               width: 100,
-          //               decoration: const BoxDecoration(
-          //                   color: Color(0xFF7CB1F1),
-          //                   boxShadow: [
-          //                     BoxShadow(
-          //                         color: Colors.white,
-          //                         blurRadius: 3,
-          //                         spreadRadius: 3),
-          //                   ],
-          //                   shape: BoxShape.circle),
-          //               child: Lottie.asset(
-          //                 "lottieAnimation/motor.json",
-          //               ),
-          //             ),
-          //
-          //             SizedBox(
-          //               height: 10,
-          //             ),
-          //             const Text(
-          //               "Start",
-          //               style: TextStyle(
-          //                   color: Color(0xFF7CB1F1),
-          //                   fontWeight: FontWeight.bold,
-          //                   fontSize: 14),
-          //             ),
-          //           ],
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 120.0, vertical: 30),
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+            ///FireAlarm
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
                 color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(20),
               ),
+              padding: EdgeInsets.only(top: 15, left: 30, right: 30, bottom: 40),
               child: Column(
                 children: [
-                  Container(
-                    height: 100,
-                    width: 100,
-                    decoration: const BoxDecoration(
-                        color: Color(0xFF7CB1F1),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.white,
-                              blurRadius: 3,
-                              spreadRadius: 3),
+                  const Text(
+                    "Fire Detection",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        height: 100,
+                        width: 100,
+                        decoration: const BoxDecoration(
+                            color: Color(0xFF7CB1F1),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.white,
+                                  blurRadius: 1,
+                                  spreadRadius: 2),
+                            ],
+                            shape: BoxShape.circle),
+                        child: Lottie.asset("lottieAnimation/alarm.json",
+                          controller: _fireAlarmController,
+                          onLoaded: (composition){
+                            _fireAlarmController.duration = composition.duration;
+                            _updateFireAlarmAnimation();
+                          },
+                        ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          HouseStatus(
+                            title: "Gas Leakage",
+                            isFireDetected: _homeAutomation!.kitchen.smoke ,
+                            color: Color(0xFFFFFFFF),
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          HouseStatus(
+                            title: "Fire!Fire!",
+                            isFireDetected: _homeAutomation!.kitchen.fireAlarm,
+                            color: Color(0xFFFFFFFF),
+                          ),
                         ],
-                        shape: BoxShape.circle),
-                    child: Lottie.asset("lottieAnimation/fan.json",
-                        controller: _fanController, onLoaded: (composition) {
-                      _updateFanAnimation();
-                      _fanController.duration = composition.duration;
-                    }, height: 70),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  FlutterSwitch(
-                    width: 60.0,
-                    activeColor: Color(0xFF7CB1F1),
-                    inactiveColor: Colors.white,
-
-                    height: 30.0,
-                    valueFontSize: 12.0,
-                    toggleSize: 20.0,
-                    toggleColor: Color(0xFF7CB1F1),
-                    activeToggleColor: Colors.white,
-                    value: _homeAutomation!.kitchen.ventilationFan,
-                    borderRadius: 30.0,
-                    padding: 2.0,
-                    showOnOff: true,
-                    activeTextColor: Colors.black,
-                    inactiveTextColor: Colors.black,
-                    activeText: "ON", // Customizable On text
-                    inactiveText: "OFF", // Customizable Off text
-                    activeTextFontWeight:
-                        FontWeight.bold, // Optional: Set font weight
-                    inactiveTextFontWeight:
-                        FontWeight.bold, // Optional: Set font weight
-                    onToggle: (val) {
-                      _fanSwitch();
-                    },
+                      )
+                    ],
                   ),
                 ],
               ),
             ),
-          ),
-    ] else
+
+            ///WaterLevelAndPump
+            // Container(
+            //   padding: const EdgeInsets.only(
+            //     top: 40,
+            //   ),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+            //     children: [
+            //       ///WaterLevel
+            //       Container(
+            //         padding:
+            //             const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+            //         decoration: BoxDecoration(
+            //           borderRadius: BorderRadius.circular(20),
+            //           color: Color(0xFF7CB1F1),
+            //         ),
+            //         child: Column(
+            //           children: [
+            //             ///WaterLevel
+            //             const Text(
+            //               "Water Level",
+            //               style: TextStyle(
+            //                   color: Colors.white,
+            //                   fontWeight: FontWeight.bold,
+            //                   fontSize: 14),
+            //             ),
+            //             const SizedBox(
+            //               height: 10,
+            //             ),
+            //             Container(
+            //                 height: 70,
+            //                 width: 100,
+            //                 decoration: const BoxDecoration(
+            //                     color: Color(0xFF7CB1F1),
+            //                     boxShadow: [
+            //                       BoxShadow(
+            //                           color: Colors.white,
+            //                           blurRadius: 3,
+            //                           spreadRadius: 3),
+            //                     ],
+            //                     shape: BoxShape.circle),
+            //                 child: Lottie.asset("lottieAnimation/waterLevel.json",
+            //                     height: 50)),
+            //
+            //             SizedBox(
+            //               height: 10,
+            //             ),
+            //             const Text(
+            //               "Full",
+            //               style: TextStyle(
+            //                   color: Colors.white,
+            //                   fontWeight: FontWeight.bold,
+            //                   fontSize: 14),
+            //             ),
+            //           ],
+            //         ),
+            //       ),
+            //
+            //       ///Motor
+            //       Container(
+            //         padding:
+            //             const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+            //         decoration: BoxDecoration(
+            //           borderRadius: BorderRadius.circular(20),
+            //           color: Colors.black,
+            //         ),
+            //         child: Column(
+            //           children: [
+            //             ///Water Pump
+            //             const Text(
+            //               "Water Pump",
+            //               style: TextStyle(
+            //                   color: Colors.white,
+            //                   fontWeight: FontWeight.bold,
+            //                   fontSize: 14),
+            //             ),
+            //             const SizedBox(
+            //               height: 10,
+            //             ),
+            //             Container(
+            //               height: 70,
+            //               width: 100,
+            //               decoration: const BoxDecoration(
+            //                   color: Color(0xFF7CB1F1),
+            //                   boxShadow: [
+            //                     BoxShadow(
+            //                         color: Colors.white,
+            //                         blurRadius: 3,
+            //                         spreadRadius: 3),
+            //                   ],
+            //                   shape: BoxShape.circle),
+            //               child: Lottie.asset(
+            //                 "lottieAnimation/motor.json",
+            //               ),
+            //             ),
+            //
+            //             SizedBox(
+            //               height: 10,
+            //             ),
+            //             const Text(
+            //               "Start",
+            //               style: TextStyle(
+            //                   color: Color(0xFF7CB1F1),
+            //                   fontWeight: FontWeight.bold,
+            //                   fontSize: 14),
+            //             ),
+            //           ],
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            GestureDetector(
+              onTap: (){
+                _showCustomDialog(context);
+              },
+              child: Padding(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 120.0, vertical: 30),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 100,
+                        width: 100,
+                        decoration: const BoxDecoration(
+                            color: Color(0xFF7CB1F1),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.white,
+                                  blurRadius: 3,
+                                  spreadRadius: 3),
+                            ],
+                            shape: BoxShape.circle),
+                        child: Lottie.asset("lottieAnimation/fan.json",
+                            controller: _fanController, onLoaded: (composition) {
+                              _updateFanAnimation();
+                              _fanController.duration = composition.duration;
+                            }, height: 70),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      FlutterSwitch(
+                        width: 60.0,
+                        activeColor: Color(0xFF7CB1F1),
+                        inactiveColor: Colors.white,
+
+                        height: 30.0,
+                        valueFontSize: 12.0,
+                        toggleSize: 20.0,
+                        toggleColor: Color(0xFF7CB1F1),
+                        activeToggleColor: Colors.white,
+                        value: _homeAutomation!.kitchen.ventilationFan,
+                        borderRadius: 30.0,
+                        padding: 2.0,
+                        showOnOff: true,
+                        activeTextColor: Colors.black,
+                        inactiveTextColor: Colors.black,
+                        activeText: "ON", // Customizable On text
+                        inactiveText: "OFF", // Customizable Off text
+                        activeTextFontWeight:
+                        FontWeight.bold, // Optional: Set font weight
+                        inactiveTextFontWeight:
+                        FontWeight.bold, // Optional: Set font weight
+                        onToggle: (val) {
+                          _fanSwitch();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ] else
             Center(child: CircularProgressIndicator()),
         ],
       ),
+    );
+  }
+  void _showCustomDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Omg! Did you Forget to Turn Off the Fan?',style: TextStyle(color: Colors.red),),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                _toggleMainLight();
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Open'),
+            ),
+            TextButton(
+              onPressed: () {
+                _toggleMainLight();
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
